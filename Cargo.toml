@@ -1,0 +1,19 @@
+[package]
+name = "uptimer"
+version = "0.1.0"
+authors = ["Nerixyz"]
+edition = "2018"
+description = "A multiplatform library to get the uptime of the current process."
+
+[workspace]
+members = [".", "bindings"]
+
+[target.'cfg(windows)'.dependencies]
+bindings = { path = "bindings" }
+windows = "0.12.0"
+
+[dependencies]
+tokio = { version = "1", optional = true, features = ["process"] }
+
+[features]
+async = ["tokio"]
