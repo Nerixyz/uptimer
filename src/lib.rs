@@ -28,11 +28,7 @@ use bindings::Windows::Win32::{
         Time::SystemTimeToFileTime,
     },
 };
-#[cfg(all(unix, not(feature = "async")))]
-use std::process::Command;
 use std::time::Duration;
-#[cfg(all(unix, feature = "async"))]
-use tokio::process::Command;
 
 /// Returns the uptime of the current process in a blocking way (on unix).
 #[cfg(windows)]
@@ -83,7 +79,7 @@ pub fn get() -> Option<Duration> {
 #[cfg(unix)]
 pub fn get() -> Option<Duration> {
     let pid = std::process::id();
-    let output = Command::new("ps")
+    let output = std::process::Command::new("ps")
         .arg("-o")
         .arg("etimes")
         .arg("-p")
@@ -108,7 +104,7 @@ pub fn get_async() -> std::future::Ready<Option<Duration>> {
 #[cfg(all(unix, feature = "async"))]
 pub async fn get_async() -> Option<Duration> {
     let pid = std::process::id();
-    let output = Command::new("ps")
+    let output = tokio::process::Command::new("ps")
         .arg("-o")
         .arg("etimes")
         .arg("-p")
