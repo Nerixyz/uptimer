@@ -73,7 +73,6 @@ pub fn get() -> Option<Duration> {
         }
     }
     .map(|t| ((t.dwHighDateTime as u64) << 32) | (t.dwLowDateTime as u64))?;
-    println!("start: {} - now: {}", start, now);
 
     let diff = now - start;
     let nanos = diff * 100;
