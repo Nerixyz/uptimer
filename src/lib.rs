@@ -76,9 +76,9 @@ pub fn get() -> Option<Duration> {
     println!("start: {} - now: {}", start, now);
 
     let diff = now - start;
-    let secs = diff / 10000000;
+    let nanos = diff * 100;
 
-    Some(Duration::from_secs(secs))
+    Some(Duration::from_nanos(nanos))
 }
 
 #[cfg(unix)]
