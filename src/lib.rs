@@ -75,9 +75,9 @@ pub fn get() -> Option<Duration> {
     .map(|t| ((t.dwHighDateTime as u64) << 32) | (t.dwLowDateTime as u64))?;
 
     let diff = now - start;
-    let nanos = diff * 100;
+    let millis = diff / 10000;
 
-    Some(Duration::from_nanos(nanos))
+    Some(Duration::from_millis(millis))
 }
 
 #[cfg(unix)]
