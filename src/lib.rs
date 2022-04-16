@@ -10,14 +10,9 @@
 //!
 //! fn main() {
 //!     sleep(Duration::from_secs(2));
-//!     println!("{:?}", uptimer::get());
+//!     assert!(uptimer::get().unwrap() >= Duration::from_secs(2))
 //! }
 //! ```
-//!
-//! ## Features
-//!
-//! * `async` enables the `get_async` function.
-//!
 
 use std::time::Duration;
 #[cfg(windows)]
@@ -78,48 +73,11 @@ pub fn get() -> Option<Duration> {
 }
 
 #[cfg(unix)]
-pub fn get() -> Option<Duration> {
-    let pid = std::process::id();
-    let output = std::process::Command::new("ps")
-        .arg("-o")
-        .arg("etimes")
-        .arg("-p")
-        .arg(pid.to_string())
-        .arg("--no-headers")
-        .output()
-        .ok()?;
-    let output = String::from_utf8(output.stdout).ok()?;
-    let elapsed_time_sec = output.trim();
+pub fn get_nix() -> Option<Duration> {
+    let created = std::fs::metadata("/proc/self").ok()?.modified().ok()?;
+    let now = std::time::SystemTime::now();
 
-    let secs = elapsed_time_sec.parse::<u64>().ok()?;
-
-    Some(Duration::from_secs(secs))
-}
-
-/// Returns the uptime of the current process asynchronously (on unix).
-#[cfg(all(windows, feature = "async"))]
-pub fn get_async() -> std::future::Ready<Option<Duration>> {
-    std::future::ready(get())
-}
-
-#[cfg(all(unix, feature = "async"))]
-pub async fn get_async() -> Option<Duration> {
-    let pid = std::process::id();
-    let output = tokio::process::Command::new("ps")
-        .arg("-o")
-        .arg("etimes")
-        .arg("-p")
-        .arg(pid.to_string())
-        .arg("--no-headers")
-        .output()
-        .await
-        .ok()?;
-    let output = String::from_utf8(output.stdout).ok()?;
-    let elapsed_time_sec = output.trim();
-
-    let secs = elapsed_time_sec.parse::<u64>().ok()?;
-
-    Some(Duration::from_secs(secs))
+    now.duration_since(created).ok()
 }
 
 #[cfg(test)]
