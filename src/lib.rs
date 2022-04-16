@@ -19,8 +19,9 @@
 //! * `async` enables the `get_async` function.
 //!
 
+use std::time::Duration;
 #[cfg(windows)]
-use bindings::Windows::Win32::{
+use windows::Win32::{
     Foundation::{FILETIME, SYSTEMTIME},
     System::{
         SystemInformation::GetSystemTime,
@@ -28,13 +29,13 @@ use bindings::Windows::Win32::{
         Time::SystemTimeToFileTime,
     },
 };
-use std::time::Duration;
 
 /// Returns the uptime of the current process in a blocking way (on unix).
 #[cfg(windows)]
 pub fn get() -> Option<Duration> {
     let proc = unsafe { GetCurrentProcess() };
-    if proc.is_null() {
+    // Here, we don't want to call `is_invalid()` since it checks if it's -1 (the expected pseudo handle).
+    if proc.0 == 0 {
         return None;
     }
 
