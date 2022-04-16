@@ -1,6 +1,6 @@
 [package]
 name = "uptimer"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Nerixyz"]
 edition = "2021"
 description = "A multiplatform library to get the uptime of the current process."

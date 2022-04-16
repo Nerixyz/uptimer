@@ -2,8 +2,16 @@
 
 A multiplatform library to get the uptime of the current process.
 
- # Example
- 
+* [x] Windows
+* [x] Linux
+* [ ] macOS
+
+## Example
+
+```toml
+uptimer = { git = "https://github.com/nerixyz/uptimer", tag = "v0.2.0" }
+```
+
 ```rust
 use std::thread::sleep;
 use std::time::Duration;
@@ -13,7 +21,3 @@ fn main() {
     println!("{:?}", uptimer::get());
 }
 ```
-
-## Features
-
-* `async` enables the `get_async` function.
