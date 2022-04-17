@@ -73,7 +73,7 @@ pub fn get() -> Option<Duration> {
 }
 
 #[cfg(unix)]
-pub fn get_nix() -> Option<Duration> {
+pub fn get() -> Option<Duration> {
     let created = std::fs::metadata("/proc/self").ok()?.modified().ok()?;
     let now = std::time::SystemTime::now();
 
