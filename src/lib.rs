@@ -17,7 +17,7 @@
 use std::time::Duration;
 #[cfg(windows)]
 use windows::Win32::{
-    Foundation::{FILETIME, SYSTEMTIME},
+    Foundation::FILETIME,
     System::{
         SystemInformation::GetSystemTime,
         Threading::{GetCurrentProcess, GetProcessTimes},
@@ -35,36 +35,21 @@ pub fn get() -> Option<Duration> {
     }
 
     let start = unsafe {
-        let mut a = FILETIME::default();
+        let mut creation_time = FILETIME::default();
         let mut b = FILETIME::default();
         let mut c = FILETIME::default();
         let mut d = FILETIME::default();
-        let ok = GetProcessTimes(
-            proc,
-            &mut a as *mut _ as _,
-            &mut b as *mut _ as _,
-            &mut c as *mut _ as _,
-            &mut d as *mut _ as _,
-        );
-        if ok.as_bool() {
-            Some(a)
-        } else {
-            None
-        }
-    }
-    .map(|t| ((t.dwHighDateTime as u64) << 32) | (t.dwLowDateTime as u64))?;
+        GetProcessTimes(proc, &mut creation_time, &mut b, &mut c, &mut d).ok()?;
+
+        ((creation_time.dwHighDateTime as u64) << 32) | (creation_time.dwLowDateTime as u64)
+    };
+
     let now = unsafe {
-        let mut sys_time = SYSTEMTIME::default();
-        GetSystemTime(&mut sys_time);
+        let sys_time = GetSystemTime();
         let mut filetime = FILETIME::default();
-        let ok = SystemTimeToFileTime(&mut sys_time, &mut filetime);
-        if ok.as_bool() {
-            Some(filetime)
-        } else {
-            None
-        }
-    }
-    .map(|t| ((t.dwHighDateTime as u64) << 32) | (t.dwLowDateTime as u64))?;
+        SystemTimeToFileTime(&sys_time, &mut filetime).ok()?;
+        ((filetime.dwHighDateTime as u64) << 32) | (filetime.dwLowDateTime as u64)
+    };
 
     let diff = now - start;
     let millis = diff / 10000;
