@@ -2,9 +2,9 @@
 
 A multiplatform library to get the uptime of the current process.
 
-* [x] Windows
-* [x] Linux
-* [ ] macOS
+- [x] Windows
+- [x] Linux
+- [ ] macOS
 
 ## Example
 
