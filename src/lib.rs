@@ -8,10 +8,8 @@
 //! use std::thread::sleep;
 //! use std::time::Duration;
 //!
-//! fn main() {
-//!     sleep(Duration::from_secs(2));
-//!     assert!(uptimer::get().unwrap() >= Duration::from_secs(2))
-//! }
+//! sleep(Duration::from_secs(2));
+//! assert!(uptimer::get().unwrap() >= Duration::from_secs(2))
 //! ```
 
 use std::time::Duration;
