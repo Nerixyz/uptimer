@@ -23,7 +23,7 @@ use windows::Win32::{
     },
 };
 
-/// Returns the uptime of the current process in a blocking way (on unix).
+/// Returns the uptime of the current process.
 #[cfg(windows)]
 pub fn get() -> Option<Duration> {
     let proc = unsafe { GetCurrentProcess() };
@@ -55,6 +55,7 @@ pub fn get() -> Option<Duration> {
     Some(Duration::from_millis(millis))
 }
 
+/// Returns the uptime of the current process (through procfs).
 #[cfg(unix)]
 pub fn get() -> Option<Duration> {
     let created = std::fs::metadata("/proc/self").ok()?.modified().ok()?;
