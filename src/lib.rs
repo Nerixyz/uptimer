@@ -28,7 +28,7 @@ use windows::Win32::{
 pub fn get() -> Option<Duration> {
     let proc = unsafe { GetCurrentProcess() };
     // Here, we don't want to call `is_invalid()` since it checks if it's -1 (the expected pseudo handle).
-    if proc.0 == 0 {
+    if proc.0.is_null() {
         return None;
     }
 
